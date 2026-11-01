@@ -1,0 +1,16 @@
+{% extends 'learning/base.html' %}
+{% block content %}
+<p class="eyebrow">A little curiosity, every day</p>
+<h1>Study Hub</h1>
+<p class="muted">Choose a subject and discover something new.</p>
+<p><a class="button" href="{% url 'learning:solar_system' %}">Open Solar System Explorer</a></p>
+<section class="subjects" aria-label="Study subjects">
+  <article class="card">
+    <h2>Science</h2>
+    <p>Explore space, planets, and the world around us.</p>
+    <a class="button" href="{% url 'learning:science' %}">Science</a>
+  </article>
+  <article class="card"><h2>Math</h2><p class="muted">Coming later</p></article>
+  <article class="card"><h2>English</h2><p class="muted">Coming later</p></article>
+</section>
+{% endblock %}

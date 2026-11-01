@@ -143,6 +143,28 @@ input[type=range] {
   pointer-events: none;
 }
 .hint { color: var(--muted); font-size: 11px; }
+#quiz-btn { width: 100%; margin-top: 10px; }
+#quiz-dialog {
+  width: min(480px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: 24px;
+  overflow: auto;
+  background: #080e1f;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+#quiz-dialog::backdrop { background: #000b; }
+.quiz-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+#quiz-close { flex: none; padding: 8px 12px; }
+#quiz-progress, #quiz-feedback { color: #c1cce3; }
+#quiz-options { display: grid; gap: 10px; margin: 18px 0; }
+.quiz-option { text-align: left; padding: 12px; }
+.quiz-option:disabled { cursor: default; opacity: 1; }
+.quiz-option.correct { border-color: #65dfa0; background: #65dfa022; }
+.quiz-option.incorrect { border-color: #ff8b91; background: #ff8b9122; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+#quiz-next { width: 100%; }
 @media(max-width:760px) {
   #topbar { top: 10px; left: 10px; }
   #controls {
@@ -191,6 +213,8 @@ input[type=range] {
     </button>
   </div>
 
+  <button id="quiz-btn" class="action primary">Take the solar system quiz</button>
+
   <div class="control-block">
     <div class="range-row">
       <label for="speed">Orbit speed</label>
@@ -226,6 +250,108 @@ input[type=range] {
 <div id="tour-status" class="panel">
   Explorer ready · Select a world
 </div>
+
+<dialog id="quiz-dialog" aria-labelledby="quiz-title">
+  <div class="quiz-header">
+    <h2 id="quiz-title">Solar system quiz</h2>
+    <button id="quiz-close" class="action" aria-label="Close quiz">Close</button>
+  </div>
+  <p id="quiz-progress"></p>
+  <h3 id="quiz-question" tabindex="-1"></h3>
+  <div id="quiz-options" role="group" aria-labelledby="quiz-question"></div>
+  <p id="quiz-feedback" role="status" aria-live="polite"></p>
+  <button id="quiz-next" class="action primary" hidden>Next question</button>
+</dialog>
+
+<script>
+// Keep the quiz available even if the 3D scene cannot load.
+(() => {
+  const questions = [
+    { question: "Which planet is closest to the Sun?", options: ["Venus", "Mercury", "Mars", "Neptune"], answer: 1, explanation: "Mercury has the closest orbit to the Sun." },
+    { question: "Which is the hottest planet?", options: ["Mercury", "Mars", "Venus", "Saturn"], answer: 2, explanation: "Venus traps heat beneath a thick atmosphere with an extreme greenhouse effect." },
+    { question: "Which planet is known as the Red Planet?", options: ["Mars", "Jupiter", "Uranus", "Venus"], answer: 0, explanation: "Iron minerals in the soil rust, giving Mars its reddish colour." },
+    { question: "Which is the largest planet in our solar system?", options: ["Saturn", "Neptune", "Uranus", "Jupiter"], answer: 3, explanation: "Jupiter is the largest planet in our solar system." },
+    { question: "Which planet has the Great Red Spot?", options: ["Mars", "Jupiter", "Venus", "Mercury"], answer: 1, explanation: "The Great Red Spot is a huge, long-lasting storm on Jupiter." },
+    { question: "What are Saturn's rings mainly made of?", options: ["Hot gas", "Liquid water", "Ice particles", "Clouds of smoke"], answer: 2, explanation: "Saturn's rings consist mainly of ice particles, with some rock and dust." },
+    { question: "Which planet rotates almost on its side?", options: ["Uranus", "Saturn", "Mercury", "Mars"], answer: 0, explanation: "Uranus has an axial tilt of about 98 degrees." },
+    { question: "Which planet is farthest from the Sun?", options: ["Jupiter", "Uranus", "Saturn", "Neptune"], answer: 3, explanation: "Neptune is the outermost of the eight planets." },
+    { question: "What kind of object is the Sun?", options: ["A planet", "A star", "A moon", "An asteroid"], answer: 1, explanation: "The Sun is a star that produces energy through nuclear fusion." },
+    { question: "On which planet is the giant volcano Olympus Mons?", options: ["Venus", "Mercury", "Mars", "Neptune"], answer: 2, explanation: "Olympus Mons is a giant shield volcano on Mars." }
+  ];
+  const dialog = document.getElementById("quiz-dialog");
+  const progress = document.getElementById("quiz-progress");
+  const heading = document.getElementById("quiz-question");
+  const options = document.getElementById("quiz-options");
+  const feedback = document.getElementById("quiz-feedback");
+  const next = document.getElementById("quiz-next");
+  let index = 0;
+  let score = 0;
+  let answered = false;
+
+  function renderQuestion() {
+    answered = false;
+    const current = questions[index];
+    progress.textContent = `Question ${index + 1} of ${questions.length} | Score: ${score}`;
+    heading.textContent = current.question;
+    feedback.textContent = "";
+    next.hidden = true;
+    next.textContent = index === questions.length - 1 ? "See results" : "Next question";
+    options.replaceChildren();
+    current.options.forEach((label, choice) => {
+      const button = document.createElement("button");
+      button.className = "action quiz-option";
+      button.textContent = label;
+      button.addEventListener("click", () => {
+        if (answered) return;
+        answered = true;
+        const correct = choice === current.answer;
+        if (correct) score++;
+        [...options.children].forEach((option, position) => {
+          option.disabled = true;
+          if (position === current.answer) option.classList.add("correct");
+          else if (position === choice) option.classList.add("incorrect");
+        });
+        progress.textContent = `Question ${index + 1} of ${questions.length} | Score: ${score}`;
+        feedback.textContent = (correct ? "Correct! " : `The correct answer is ${current.options[current.answer]}. `) + current.explanation;
+        next.hidden = false;
+        next.focus();
+      });
+      options.appendChild(button);
+    });
+    heading.focus();
+  }
+
+  document.getElementById("quiz-btn").addEventListener("click", () => {
+    index = 0;
+    score = 0;
+    dialog.showModal();
+    renderQuestion();
+  });
+  document.getElementById("quiz-close").addEventListener("click", () => dialog.close());
+  // Keep simulator shortcuts from intercepting keyboard answers or Escape.
+  dialog.addEventListener("keydown", event => event.stopPropagation());
+  next.addEventListener("click", () => {
+    if (index === questions.length) {
+      index = 0;
+      score = 0;
+      renderQuestion();
+      return;
+    }
+    if (!answered) return;
+    index++;
+    if (index < questions.length) {
+      renderQuestion();
+      return;
+    }
+    progress.textContent = "Quiz complete";
+    heading.textContent = `You scored ${score} out of ${questions.length}!`;
+    options.replaceChildren();
+    feedback.textContent = score === questions.length ? "Perfect score! Great exploring." : "Keep exploring, then try again!";
+    next.textContent = "Try again";
+    heading.focus();
+  });
+})();
+</script>
 
 <script type="importmap">
 {

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Study Hub{% endblock %}</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f4f6fb; color: #172b46; font: 18px/1.6 system-ui, sans-serif; }
+    header { padding: 22px max(24px, calc((100% - 960px)/2)); background: #172b46; }
+    header a { color: white; text-decoration: none; font-weight: 700; }
+    header nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    header .explorer-link { background: #ffe082; color: #172b46; padding: 12px 20px; border-radius: 9px; }
+    main { max-width: 960px; margin: 64px auto; padding: 0 24px; }
+    h1 { font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1.1; margin: 16px 0; }
+    .eyebrow { text-transform: uppercase; letter-spacing: .12em; color: #456181; font-size: .8rem; font-weight: 700; }
+    .subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 40px; }
+    .card { background: white; border: 1px solid #dbe2ed; border-radius: 18px; padding: 28px; }
+    .card h2 { margin-top: 0; }
+    .button { display: inline-block; background: #2456c7; color: white; padding: 12px 24px; border-radius: 9px; text-decoration: none; font-weight: 700; }
+    a:focus-visible { outline: 3px solid #e99a19; outline-offset: 5px; }
+    .muted { color: #52647c; }
+  </style>
+</head>
+<body>
+  <header><nav aria-label="Main navigation"><a href="{% url 'learning:home' %}">Study Hub</a><a class="explorer-link" href="{% url 'learning:solar_system' %}">Open Solar System Explorer</a></nav></header>
+  <main>{% block content %}{% endblock %}</main>
+</body>
+</html>

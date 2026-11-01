@@ -1,0 +1,12 @@
+{% extends 'learning/base.html' %}
+{% block title %}Science Study | Study Hub{% endblock %}
+{% block content %}
+<p class="eyebrow">Discover our place in space</p>
+<h1>Science Study</h1>
+<p><a class="button" href="{% url 'learning:solar_system' %}">Open Solar System Explorer</a></p>
+<div class="card">
+  <h2>Welcome to the solar system</h2>
+  <p>Our solar system is home to the Sun, eight planets, moons, and many smaller objects. Let's start exploring our cosmic neighbourhood!</p>
+</div>
+<p><a href="{% url 'learning:home' %}">Back to Study Hub</a></p>
+{% endblock %}
