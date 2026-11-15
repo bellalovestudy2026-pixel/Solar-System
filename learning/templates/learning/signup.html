@@ -1,0 +1,14 @@
+{% extends 'learning/base.html' %}
+{% block title %}Sign up | Study Hub{% endblock %}
+{% block content %}
+<section class="card auth-card">
+  <h1>Sign up</h1>
+  <p>Create a student account, then log in to Study Hub.</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="button" type="submit">Create account</button>
+  </form>
+  <p>Already have an account? <a href="{% url 'learning:login' %}">Log in</a>.</p>
+</section>
+{% endblock %}

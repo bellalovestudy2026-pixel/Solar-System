@@ -21,6 +21,26 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned -Force
 
 After activation, `python manage.py runserver` also works.
 
+## Student accounts
+
+- `/accounts/signup/` uses Django's `UserCreationForm` to validate usernames and passwords and store hashed passwords. Successful registration redirects to login.
+- `/accounts/login/` uses Django's `LoginView` and its built-in authentication form to start a session. Successful login redirects home (or to a safe local `next` URL).
+- `/accounts/logout/` uses Django's `LogoutView`. The navigation submits a CSRF-protected POST form to end the session and return home.
+- `learning/views.py` adds the sign-up view; `learning/urls.py` names the three account routes. `config/settings.py` sets the login and logout destinations.
+- `learning/templates/learning/login.html` and `signup.html` render forms, validation errors, and CSRF tokens. `base.html` shows account links or a logout button; `home.html` displays the signed-in student's username using Django's existing auth context processor.
+
+Apply built-in database migrations before first use, then run the local checks:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py migrate
+.\.venv\Scripts\python.exe manage.py check
+.\.venv\Scripts\python.exe manage.py test
+```
+
+Tests cover guest pages, registration and validation, password hashing, login errors, username display, safe redirects, POST-only logout, session clearing, and CSRF protection. Tests use a separate temporary database.
+
+To try it in a browser, run the server, sign up, log in, check the welcome message on the home page, and click **Log out**. The welcome message disappears and the login/sign-up links return.
+
 ## How the pages connect
 
 - `config/settings.py`: project settings, including the registered `learning` app.

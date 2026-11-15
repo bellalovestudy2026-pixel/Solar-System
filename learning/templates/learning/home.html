@@ -2,6 +2,9 @@
 {% block content %}
 <p class="eyebrow">A little curiosity, every day</p>
 <h1>Study Hub</h1>
+{% if user.is_authenticated %}
+<p>Welcome, {{ user.username }}!</p>
+{% endif %}
 <p class="muted">Choose a subject and discover something new.</p>
 <p><a class="button" href="{% url 'learning:solar_system' %}">Open Solar System Explorer</a></p>
 <section class="subjects" aria-label="Study subjects">
