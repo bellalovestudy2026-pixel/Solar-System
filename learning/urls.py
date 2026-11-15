@@ -10,5 +10,6 @@ urlpatterns = [
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('', views.home, name='home'),
     path('science/', views.science, name='science'),
+    path('learn-django/', views.learn_django, name='learn_django'),
     path('science/solar-system/', views.solar_system, name='solar_system'),
 ]

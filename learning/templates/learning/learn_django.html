@@ -1,0 +1,41 @@
+{% extends 'learning/base.html' %}
+{% block title %}Learn Django | Study Hub{% endblock %}
+{% block content %}
+<p class="eyebrow">Build websites with Python</p>
+<h1>Learn Django</h1>
+<p>Django is a Python framework for building websites. Study Hub is a Django project, so you can learn by exploring the code behind these pages.</p>
+<section class="card" aria-labelledby="request-heading">
+  <h2 id="request-heading">1. Follow a page request</h2>
+  <p>When you open a page, Django matches its address in <code>urls.py</code>, calls a view in <code>views.py</code>, and returns a response. A view can render an HTML template to create the page you see.</p>
+  <p><strong>Address → URL route → view → HTML response</strong></p>
+</section>
+<section class="subjects" aria-label="Django building blocks">
+  <article class="card">
+    <h2>URLs and views</h2>
+    <p><code>config/urls.py</code> passes Study Hub requests to <code>learning/urls.py</code>. Each route selects a view in <code>learning/views.py</code>.</p>
+  </article>
+  <article class="card">
+    <h2>Templates</h2>
+    <p>HTML templates live in <code>learning/templates/learning/</code>. The shared <code>base.html</code> provides the navigation and styles; individual pages supply their content.</p>
+  </article>
+  <article class="card">
+    <h2>Models and migrations</h2>
+    <p><code>models.py</code> defines stored information using Python classes. Run <code>makemigrations</code> to record model changes, then <code>migrate</code> to apply them to the database.</p>
+  </article>
+</section>
+<section class="card" aria-labelledby="practice-heading" style="margin-top: 24px;">
+  <h2 id="practice-heading">2. Try your first change</h2>
+  <ol>
+    <li>Open <code>learning/templates/learning/home.html</code>.</li>
+    <li>Change the text inside its <code>&lt;h1&gt;</code> heading and save the file.</li>
+    <li>Return to the Study Hub home page and refresh to see your change.</li>
+  </ol>
+  <p>No database migration is needed for a template text change.</p>
+</section>
+<section class="card" aria-labelledby="next-heading" style="margin-top: 24px;">
+  <h2 id="next-heading">3. Build another page</h2>
+  <p>Try adding a Math page: create a template, write a view that renders it, add a named route in <code>learning/urls.py</code>, and link to it from the home page. Follow the existing Science page as an example.</p>
+  <p><a href="https://docs.djangoproject.com/en/5.2/intro/tutorial01/">Continue with the official Django 5.2 tutorial</a></p>
+</section>
+<p><a href="{% url 'learning:home' %}">Back to Study Hub</a></p>
+{% endblock %}

@@ -21,5 +21,9 @@ def home(request):
 def science(request):
     return render(request, 'learning/science.html')
 
+
+def learn_django(request):
+    return render(request, 'learning/learn_django.html')
+
 def solar_system(request):
     return render(request, 'learning/solar_system.html')
