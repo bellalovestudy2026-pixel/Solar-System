@@ -2,3 +2,7 @@
 __pycache__/
 *.py[cod]
 db.sqlite3
+.env
+.env.local
+.neon
+node_modules/
